@@ -1,0 +1,202 @@
+// %d(int) %c(char) %f(float) %t(bool) %s(str)
+// %o(base8) %x(base16) %v(base on data type) %T(type of supplied value)
+
+reader := bufio.NewReader(os.Stdin)                            // read from stdin
+name, err := reader.ReadString('\n')                           // scape char for end stdin
+reflect.TypeOf(name)                                           // type of var
+var name any                                                   // define any type
+d, err := strconv.Atoi("1221")                                 // asci to int
+d, err := strconv.Itoa(1221)                                   // int to asci
+d, err := strconv.ParseFloat("1221", 64)                       // asci to float64
+myName := strings.NewReplacer("m", "Masoud").Replace("m Taee") // replace m with Masoud in string 'm Taee'
+strings.Contains(myName, "Taee")                               // check taee in myName
+strings.Index(myName, "Ta")                                    // return index of my 'Ta'
+strings.Replace(myName, "e", "mm", -1)                         // return Masoud Tammmm -1 == all
+strings.Replace(myName, "e", "mm", n)                          // return Masoud Tamme n == n matched char
+fmt.Printf("%#U", 'a')                                         // return U+0061 'a'
+
+// return random number lte 50 and create it with time uniux
+rand.New(rand.NewSource(time.Now().Unix()))
+randNum := rand.Intn(50) + 1
+
+// degree to radians and visa versa
+var degree float64 = 21
+r90 := (degree * math.Pi) / 180
+d90 := math.Ceil(r90 * (180 / math.Pi))
+
+string([]byte{'a', 'b', 'c'}[:]) // array to string return abc
+
+// create array
+var Array []any
+Array := [...]any{}
+Array := []any{}
+Array := [5]int{1: 10, 3: 30} // return [0 10 0 30 0]
+Array := [5]any{1: 10, 3: 30} // return [<nil> 10 <nil> 30 <nil>]
+Array := make([]string, 2)
+
+// function
+func simple(x int, y float64m z string) (x string y float64)  {}
+func unlimited(x ...any) {}
+func unlimited(x ...any) {}
+unlimited([]any{1, 2, 3}...)
+
+// pointer
+func pointer(pointer *string) {fmt.Println(pointer, *pointer) } // print 0xc000014270 abc
+initPointer := "abc"
+pointer(&initPointer) 
+var pointerVal *string = &initPointer
+fmt.Println(*pointerVal)
+
+// array pointer
+func arrPointer(arr *[]any) {}
+arrPointer(&[]any{1, 2, 3})
+
+
+// file operation
+var fileName string = "log.txt"
+_, err := os.Stat(fileName)
+if errors.Is(err, os.ErrNotExist) {
+	_, err := os.Create(fileName)
+	errHandler(err)
+}
+file, err := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+errHandler(err)
+defer file.Close()
+for index := range [20]any{} {
+	_, err = file.WriteString("line: " + strconv.Itoa(index+1) + "\n")
+	errHandler(err)
+}
+scanFile := bufio.NewScanner(file)
+scanFile.Split(bufio.ScanLines)
+if err := scanFile.Err(); err != nil {
+	errHandler(err)
+}
+for scanFile.Scan() {
+	pl(scanFile.Text())
+}
+switch allowdel := os.Getenv("ALLOW_DELETE"); allowdel {
+case
+	"0",
+	"true":
+	os.Remove(fileName)
+}
+
+// map 
+var myMap map[string]string
+myMap = make(map[string]string)
+
+myMap2 := make(map[string]string)
+
+// generics
+// interfaces
+type MyConst interface {
+	int | float64
+}
+func addNums[inter MyConst](x inter, y inter) inter {
+	return x + y
+}
+// struct 
+type class struct {
+	name    string
+	age     int
+	balance float64
+}
+func getUser(c class) {
+	pf("name: %s, age: %d, balance: %f", c.name, c.age, c.balance)
+}
+func addBalance(c *class, balance float64) {
+	c.balance += balance
+}
+func (c class) print() {
+	pf("name: %s, age: %d, balance: %f \n", c.name, c.age, c.balance)
+}
+func main() {
+	var obj1 class
+	obj1.name = "masoud"
+	obj1.age = 31
+	obj1.balance = 3.2
+	addBalance(&instance, 14)
+	getUser(obj1)
+	obj2 := class{"sina", 12, 100}
+	obj2.addBalance(21)
+	obj.print()
+}
+
+type user struct {
+	name   string
+	family string
+}
+type profile struct {
+	age int
+	user
+}
+user1 := profile{
+	12,
+	user{
+		"masoud",
+		"taee",
+	},
+}
+
+// interfaces
+type interf interface {
+	MethodA()
+	MethodB()
+}
+type Name string
+func (n Name) MethodA() {}
+func (n Name) MethodB() {}
+func main() {
+	var name interf
+	name = Name("kitty")
+	name.MethodA()
+	name.MethodB()
+}
+
+// mute and lock
+type interf struct {
+	name    string
+	balance float64
+	lock    sync.Mutex
+}
+func (i *interf) addBalance(bal float64) {
+	i.lock.Lock()
+	i.balance += bal
+	defer i.lock.Unlock()
+}
+func main() {
+	var user interf
+	user.name = "masoud"
+	user.balance = 0
+	user.addBalance(100.20)
+}
+
+// closures
+closu := func(x, y int) int { return x + y }
+pl(closu(2, 5))
+
+x := 1
+changeX := func ()  { x += 1}
+changeX()
+
+// passin function
+func funcHandler(f func(int, int) int, x, y int) { (f(x, y)) }
+func sumer(x, y int) int { return x + y }
+func main() {
+	funcHandler(sumer, 10, 20)
+}
+
+// call func by string name 
+type T struct{}
+func (t *T) Foo() { pl("foo") }
+func main() {
+	var t T
+	reflect.ValueOf(&t).MethodByName("Foo").Call([]reflect.Value{})
+}
+
+// recursion
+func factorial(num int) int {
+	if num == 0 { return 1 }
+	return num * factorial(num-1)
+}
+pl("factorial 4 = ", factorial(3))
